@@ -1,1 +1,192 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+/* -----------------------------------------------------------
+   1. THEME DEFINITIONS
+   ----------------------------------------------------------- */
+
+@plugin "daisyui/theme" {
+  name: "shelfcheck-light";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+
+  /* Surfaces */
+  --color-base-100: #ffffff;
+  --color-base-200: #f4f6f7;
+  --color-base-300: #e7ebed;
+  --color-base-content: #142027;
+
+  /* Brand: deep teal — clinical, calm, not a consumer-app gradient */
+  --color-primary: #0f6e6e;
+  --color-primary-content: #ffffff;
+  --color-secondary: #2d5f7c;
+  --color-secondary-content: #ffffff;
+  --color-accent: #b7791f;
+  --color-accent-content: #ffffff;
+
+  --color-neutral: #334047;
+  --color-neutral-content: #f4f6f7;
+
+  /* Semantic states — reused directly as the four expiry groups */
+  --color-info: #2563eb;
+  --color-info-content: #ffffff;
+  --color-success: #15803d;
+  --color-success-content: #ffffff;
+  --color-warning: #b45309;
+  --color-warning-content: #ffffff;
+  --color-error: #b91c1c;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+}
+
+@plugin "daisyui/theme" {
+  name: "shelfcheck-dark";
+  prefersdark: true;
+  color-scheme: "dark";
+
+  /* Surfaces — matte slate, not pure black, so cards separate from bg */
+  --color-base-100: #10171a;
+  --color-base-200: #182226;
+  --color-base-300: #223035;
+  --color-base-content: #e7edef;
+
+  --color-primary: #2dd4bf;
+  --color-primary-content: #06201d;
+  --color-secondary: #7dabc9;
+  --color-secondary-content: #0b1a24;
+  --color-accent: #eab86c;
+  --color-accent-content: #241a05;
+
+  --color-neutral: #2c383d;
+  --color-neutral-content: #e7edef;
+
+  --color-info: #60a5fa;
+  --color-info-content: #0b1a3a;
+  --color-success: #4ade80;
+  --color-success-content: #052e13;
+  --color-warning: #fbbf24;
+  --color-warning-content: #2b1c02;
+  --color-error: #f87171;
+  --color-error-content: #2b0a0a;
+
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+}
+
+/* -----------------------------------------------------------
+   2. COMPONENT UTILITIES
+   ----------------------------------------------------------- */
+
+@layer components {
+  /* Solid, restrained primary action — no gradients or motion tricks.
+     This app is read at a glance during a demo; buttons should not
+     compete with the numbers for attention. */
+  .btn-app-primary {
+    background-color: var(--color-primary) !important;
+    color: var(--color-primary-content) !important;
+    border: none !important;
+    border-radius: var(--radius-field) !important;
+    font-weight: 600 !important;
+    transition: filter 0.15s ease !important;
+  }
+  .btn-app-primary:hover {
+    filter: brightness(1.08);
+  }
+  .btn-app-primary:active {
+    filter: brightness(0.95);
+  }
+
+  .btn-app-outline {
+    background: transparent !important;
+    color: var(--color-primary) !important;
+    border: 1.5px solid var(--color-primary) !important;
+    border-radius: var(--radius-field) !important;
+    font-weight: 600 !important;
+  }
+  .btn-app-outline:hover {
+    background-color: var(--color-primary) !important;
+    color: var(--color-primary-content) !important;
+  }
+
+  /* Destructive-leaning but not alarmist — used for "Return to distributor" */
+  .btn-app-danger {
+    background: transparent !important;
+    color: var(--color-error) !important;
+    border: 1.5px solid var(--color-error) !important;
+    border-radius: var(--radius-field) !important;
+    font-weight: 600 !important;
+  }
+  .btn-app-danger:hover {
+    background-color: var(--color-error) !important;
+    color: var(--color-error-content) !important;
+  }
+
+  .btn-app-ghost {
+    background: transparent !important;
+    color: var(--color-base-content) !important;
+    border: none !important;
+    border-radius: var(--radius-field) !important;
+    font-weight: 500 !important;
+  }
+  .btn-app-ghost:hover {
+    background-color: var(--color-base-300) !important;
+  }
+
+  /* Group badges — the single most-repeated visual element in the app.
+     Solid fill + content color guarantees contrast in both themes
+     without needing separate light/dark badge palettes. */
+  .badge-expired {
+    background-color: var(--color-error) !important;
+    color: var(--color-error-content) !important;
+    border: none !important;
+    font-weight: 600 !important;
+  }
+  .badge-soon30 {
+    background-color: var(--color-warning) !important;
+    color: var(--color-warning-content) !important;
+    border: none !important;
+    font-weight: 600 !important;
+  }
+  .badge-soon90 {
+    background-color: var(--color-info) !important;
+    color: var(--color-info-content) !important;
+    border: none !important;
+    font-weight: 600 !important;
+  }
+  .badge-safe {
+    background-color: var(--color-success) !important;
+    color: var(--color-success-content) !important;
+    border: none !important;
+    font-weight: 600 !important;
+  }
+
+  /* Card shell used for summary tiles and panels */
+  .app-card {
+    background-color: var(--color-base-100);
+    border: 1px solid var(--color-base-300);
+    border-radius: var(--radius-box);
+  }
+}
+
+/* -----------------------------------------------------------
+   3. BASE TYPOGRAPHY & LAYOUT
+   ----------------------------------------------------------- */
+
+@layer base {
+  body {
+    @apply bg-base-200 text-base-content antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply tracking-tight font-semibold;
+  }
+}
