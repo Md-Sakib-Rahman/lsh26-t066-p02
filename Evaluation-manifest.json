@@ -1,0 +1,90 @@
+{
+  "team_id": "LSH26-T066",
+  "problem_id": "P02",
+  "repository_name": "lsh26-t066-p02",
+  "live_url": "https://lsh26-t066-p02.vercel.app/",
+
+  "event_start_code": "LSH26-8490-C900",
+  "repository_created_before_release": false,
+  "pre_event_materials": [
+    "Generic Vite + React scaffold (create-vite default template)",
+    "Tailwind CSS v4 + daisyUI wiring with a custom two-theme (light/dark) design system, no problem-specific logic",
+    "Architecture and System Requirements Specification document, written before the problem pack was released, based on independent analysis of the published P02 sample data and the pre-event hackathon context notes"
+  ],
+  "sample_data": {
+    "loads_published_fixture": true,
+    "method": "file upload or paste",
+    "reset_instructions": "The app loads the published fixture (P02_pharmacy_expiry_public.json, all 25 cases) automatically on first load via the Case dropdown. If a custom case has been loaded through the 'Load a custom case' upload/paste panel, click 'Reset to published sample' in that same panel to discard it and return to whichever published case is selected in the dropdown."
+  },
+  "problem_solving_method": "The 25 published sample cases were profiled in full before writing any code: every case seeds exactly one item at each of six days-left boundary values (-1, 0, 30, 31, 90, 91) and every mark_returned entry falls inside the 0-30 day group. This showed the classification boundary logic and the returned-item exclusion from active totals were the parts most likely to be checked, so a pure, framework-free domain layer (date math, money math, classification, aggregation, storage, case validation) was built and unit-tested against a golden reference table computed independently from the sample data, before any UI component was written. Components were then built and manually verified in isolation against mock props, and wired into the app last.",
+  "requirements": {
+    "Item1_stock_list": {
+      "status": "complete",
+      "evidence": "src/data/cases.json (embedded published fixture, 25 cases, 40-60 items each, all with name/batch/quantity/expiry/unit_price_bdt)"
+    },
+    "Item2_dashboard_four_groups": {
+      "status": "complete",
+      "evidence": "src/lib/expiry.js (classify()), src/lib/dashboard.js (buildDashboard()), src/components/SummaryCards/SummaryCards.jsx"
+    },
+    "Item3_mark_returned": {
+      "status": "complete",
+      "evidence": "src/components/StockTable/StockRow.jsx (Return button), src/components/ReturnedList/ReturnedList.jsx (Undo button), src/lib/dashboard.js excludes returned items from active counts/values"
+    },
+    "Item4_taka_value_expired_and_soon": {
+      "status": "complete",
+      "evidence": "src/lib/money.js (integer-paisa arithmetic), SummaryCards.jsx displays expiredValuePaisa and soon30ValuePaisa per clarifications R-04 and R-27"
+    },
+    "R24_returned_excluded_from_active_totals": {
+      "status": "complete",
+      "evidence": "src/lib/dashboard.js; verified by src/tests/golden.test.js across all 25 public cases (64 automated tests total in the domain layer)"
+    },
+    "custom_case_upload_or_paste": {
+      "status": "complete",
+      "evidence": "src/components/CaseLoader/CaseLoader.jsx, src/lib/schema.js (validateCase, 11 tests including validation against the real dataset)"
+    },
+    "state_persistence_across_reload": {
+      "status": "complete",
+      "evidence": "src/lib/storage.js: returned-item state and the selected published case both persist in localStorage, scoped per case_id"
+    }
+  },
+  "team_members": [
+    {
+      "registered_name": "Md Sakib Rahman",
+      "github_username": "Md-Sakib-Rahman",
+      "major_contribution": "Sole contributor to this repository: full domain layer (date/expiry/money/dashboard/storage/schema logic and its automated test suite), all UI components, App.jsx state wiring, the custom-case upload/paste feature, theming, and deployment. Per the team's two-person, one-person-per-problem split, the other registered member's work is recorded in the lsh26-t066-p## repository for the team's second selected problem, not in this one.",
+      "evidence_paths_or_commits": [
+        "src/lib/",
+        "src/components/",
+        "src/App.jsx",
+        "src/tests/"
+      ]
+    },
+    {
+      "registered_name": "Mahmod Showqi",
+      "github_username": "Showqix899",
+      "major_contribution": "No code contribution to this repository (P02). Worked the team's second selected problem per the team's one-person-per-problem division of labour; see that repository's own README and evaluation-manifest.json for their contribution record.",
+      "evidence_paths_or_commits": []
+    }
+  ],
+  "major_design_decisions": [
+    "No backend, login, or database: the problem has a single undifferentiated user role and no cross-device requirement, so a client-only app with localStorage persistence satisfies every stated requirement without added build risk.",
+    "All money and date arithmetic uses integers (paisa and epoch-days) rather than floats, to avoid rounding drift and timezone-related off-by-one errors on the classification boundaries the sample data specifically seeds at -1/0/30/31/90/91 days.",
+    "Returned-state and selected-case persistence are keyed by case_id in localStorage, because item IDs (e.g. M001) repeat across different cases in the sample data and a global key would leak one case's returns into another.",
+    "Custom case loading accepts both file upload and paste-as-text, per the submission kit's stated 'loading the file or typing them in' allowance, rather than building a separate manual multi-field entry form."
+  ],
+  "known_limitations": [
+    "A custom (uploaded/pasted) case is not itself persisted across a page reload; reloading returns to the last-selected published case. Returns made on a published case, and the selected published case itself, do persist across reload.",
+    "Filtering the stock table is available by expiry group only; there is no free-text search by name, company, or batch.",
+    "No CSV export of the expired/expiring-soon list.",
+    "No automated component/UI tests; the domain logic layer (date, money, classification, aggregation, storage, validation) has 64 automated tests, and UI components were verified manually against mock props before integration."
+  ],
+  "ai_tools_used": [
+    {
+      "tool": "Claude (Anthropic)",
+      "used_for": "Pre-event architecture and requirements planning from the published sample data; writing and iterating the domain layer (src/lib/) and its Vitest test suites; writing UI components against an agreed prop contract; debugging a state-initialization-order bug; drafting README.md, this manifest, and LICENSES.md from the organizer-supplied templates.",
+      "how_output_was_verified": "Every domain-layer function was checked against a golden reference table computed independently from the published sample data (all 25 cases, 64 automated tests, run and confirmed passing before integration). UI components were manually verified in isolation against mock props before being wired into the app. The team read and understood all generated code before committing it."
+    }
+  ],
+  "licenses_file": "LICENSES.md",
+  "declaration": "The information above is complete and truthful to the best of the team's knowledge."
+}
