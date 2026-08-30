@@ -1,7 +1,7 @@
 # Event Start Record
 
 - **Team ID:** `LSH26-T066`
-- **Problem ID:** `P##`
+- **Problem ID:** `P02`
 - **Repository:** `lsh26-t066-p02`
 - **Event start code:** `LSH26-8490-C900`
 - **Repository created before release:**  No
