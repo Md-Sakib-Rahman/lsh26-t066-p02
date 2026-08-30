@@ -75,7 +75,7 @@ export default function StockTable({ items, onMarkReturned }) {
         >
           <div ref={contentRef}>
             <table className="w-full text-sm">
-              <thead className="bg-base-300/50 text-left sticky top-0">
+              <thead className="bg-base-300 text-left sticky top-0">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Medicine</th>
                   <th className="px-4 py-3 font-semibold">Company</th>

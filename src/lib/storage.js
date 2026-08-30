@@ -86,6 +86,26 @@ export function loadReturnedIds(caseId, seededIds = []) {
   const stored = readStoredReturns(caseId);
   return new Set([...seededIds, ...stored]);
 }
+const SELECTED_CASE_KEY = 'p02:selected-case';
+/**
+ * Persists which published case the dropdown was last set to, so a
+ * reload doesn't silently reset the pharmacist/judge back to the first
+ * case in the list.
+ */
+export function loadSelectedCaseId(fallback) {
+  try {
+    return localStorage.getItem(SELECTED_CASE_KEY) ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+export function saveSelectedCaseId(caseId) {
+  try {
+    localStorage.setItem(SELECTED_CASE_KEY, caseId);
+  } catch {
+    // no-op if storage unavailable
+  }
+}
 
 /**
  * Persists a full returned-ID set for a case, storing only the IDs that
